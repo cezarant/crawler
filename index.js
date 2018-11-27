@@ -7,6 +7,8 @@ var respRequisicao;
 var listResp = [];
 const { MongoClient } = require("mongodb");
 var mongoose = require('mongoose'); 
+var lstTopicos = ["Arquivo", "Remessa","Retorno",  "Código","Barras", "Certificado","Boleto", "Layout","Carteira", "CNAB", 
+                  "PDF", "Carnê", "Impressão", "Caixa","Itaú","Bradesco","Santander","Votorantim", "Ajuda","Dúvida","Erro","Problema"];
 /***************************  Socket.io     ************************************/
 /*******************************************************************************/
 app.get('/', function(req, res)
@@ -61,15 +63,25 @@ function makeRequest(indice)
 	const request = require('request');	
 	request('https://github.com/BoletoNet/boletonet/issues?page='+ indice, { json: false }, (err, res, body) => 
 	{		
+		var tipoTopico = "indefinido";  
 		$ = cheerio.load(body);				
 		$('a').each(function (index, element) 
 		{			
 			if($(element).attr('id') != undefined)
-			{
-				respRequisicao = { id : $(element).attr('id'), content: $(element).text() };
+			{				
+				for(var i=0;i<lstTopicos.length;i++)
+				{
+					if($(element).text().includes(lstTopicos[i]))
+					{
+					  	tipoTopico = lstTopicos[i];
+						i = lstTopicos.length;
+					}
+				}				
+				respRequisicao = { id : $(element).attr('id'), content: $(element).text() , tipoTopico = tipoTopico};				
 			    listResp.push(respRequisicao);
 				console.log(respRequisicao); 
 			}			
+			tipoTopico = "indefinido";  
 		});						
 		if((indice + 1) === 11)
 		   saveList(); 	
@@ -83,7 +95,7 @@ function saveList()
     var Schema = mongoose.Schema;   
     var responseSchema = new Schema
 	(
-	  {
+	  {		
 		responses:[Object]
 	  }
 	);  	
