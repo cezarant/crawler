@@ -7,7 +7,7 @@ var respRequisicao;
 var listResp = [];
 const { MongoClient } = require("mongodb");
 var mongoose = require('mongoose'); 
-var lstTopicos = ["Arquivo", "Remessa","Retorno",  "Código","Barras", "Certificado","Boleto", "Layout","Carteira", "CNAB", 
+var lstTopicos = ["Arquivo", "Remessa","Retorno",  "Código","Barra","Certificado","Boleto", "Layout","Carteira", "CNAB", 
                   "PDF", "Carnê", "Impressão", "Caixa","Itaú","Bradesco","Santander","Votorantim", "Ajuda","Dúvida","Erro","Problema"];
 /***************************  Socket.io     ************************************/
 /*******************************************************************************/
