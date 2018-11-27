@@ -79,7 +79,7 @@ function makeRequest(indice)
 }
 function saveList()
 {
-	mongoose.connect(process.env.MONGODB_URI);		
+	mongoose.connect(process.env.MONGO_URI);		
     var Schema = mongoose.Schema;   
     var responseSchema = new Schema
 	(
