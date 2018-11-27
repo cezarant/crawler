@@ -77,7 +77,7 @@ function makeRequest(indice)
 						i = lstTopicos.length;
 					}
 				}				
-				respRequisicao = { id : $(element).attr('id'), content: $(element).text() , tipoTopico = tipoTopico};				
+				respRequisicao = { id : $(element).attr('id'), content: $(element).text() , tipoTopico : tipoTopico};				
 			    listResp.push(respRequisicao);
 				console.log(respRequisicao); 
 			}			
