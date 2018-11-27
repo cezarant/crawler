@@ -16,6 +16,25 @@ app.get('/', function(req, res)
   res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/listIssues', function(req, res)
+{
+   mongoose.connect(process.env.MONGO_URI);		    
+   var Schema = mongoose.Schema;   
+   var responseSchema = new Schema
+   (
+	  {		
+		responses:[Object]
+	  }
+   );  	
+   var ResponseModel = mongoose.model('responses', responseSchema);       
+   ResponseModel.findOne({ 'name.last': 'Ghost' }, function (err, responses)
+   {
+       if (err) return handleError(err);
+		
+	   res.send(responses);	    		
+   });  
+});
+
 io.on('connection', function(socket)
 {
   socket.on('chat message', function(etapaAtual)
