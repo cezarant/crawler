@@ -75,6 +75,8 @@
 		etapa = inicio; 
 		fimPaginacao = fim;   	  
 		socket.emit('messageBroadcast',etapa);
+		$('#iniciarCrawler').text('Aguarde...'); 
+		$('#iniciarCrawler').prop("disabled", true); 		
 	  }  
       socket.on('messageBroadcast', function(msg)
 	  { 		

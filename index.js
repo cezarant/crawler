@@ -30,8 +30,8 @@ app.get('/', function(req, res)
 });
 
 app.get('/listIssues', function(req, res)
-{
-   mongoose.connect("mongodb://foodfuture:viva.147@ds243798.mlab.com:43798/foodfuture");		       
+{   
+   mongoose.connect(process.env.MONGO_URI);			
    var ResponseModel = mongoose.model('responses', responseSchema);       
    ResponseModel.findOne({}, function (err, responses)
    {
@@ -99,8 +99,7 @@ function makeRequest(indice)
 }
 function saveList()
 {
-	// mongoose.connect(process.env.MONGO_URI);		
-	mongoose.connect("mongodb://foodfuture:viva.147@ds243798.mlab.com:43798/foodfuture");    
+	mongoose.connect(process.env.MONGO_URI);			
 	var ResponseModel = mongoose.model('responses', responseSchema);  
 	var responseDB = new ResponseModel({responses : listResp});
 	responseDB.save(function (err)
