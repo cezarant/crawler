@@ -43,22 +43,25 @@
   <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">          
-          <a class="navbar-brand" href="#">Crawler</a>
+          <a class="navbar-brand" href="#">Crawler de Issues do Projeto Boleto Net</a>
         </div>        
       </div>
     </nav>        
     <div class="container">
         <div class="row">
             <div class="col-lg-12">                
+				<p>Este crawler tem a função de facilitar a classificação de issues do projeto Boleto Net</p>
 				<p>
-					<button id="iniciarCrawler" type="button" class="btn btn-danger" onclick="iniciarCrawler(2,11)">Iniciar</button>  
+					<button id="iniciarCrawler" type="button" class="btn btn-danger" onclick="iniciarCrawler(1,11)">Iniciar Varredura de Issues</button>  
 				</p>				
 				<p>
 					<ul class="mensagens" id="messages">									
-					</ul>					
+					</ul>  
 				</p>
             </div>
 	    </div>      
+		<div id="divResultados">
+		</div>
     </div> <!-- /container -->        	
 	<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.js"></script>	
@@ -66,26 +69,48 @@
 	<script>
       var socket = io();
 	  var etapa = 0; 	  
-	  var fimPaginacao = 0;   	  
-	  $("#ulRotas").hide();	  
+	  var fimPaginacao = 0;   	  	  
       function iniciarCrawler(inicio, fim)
 	  {
 		etapa = inicio; 
 		fimPaginacao = fim;   	  
-		socket.emit('chat message',etapa);
+		socket.emit('messageBroadcast',etapa);
 	  }  
-      socket.on('chat message', function(msg)
+      socket.on('messageBroadcast', function(msg)
 	  { 		
 		if((etapa + 1) >= fimPaginacao)
 		{			
-			alert('Fim da execução. Para recuperar os resultados, acesse as rotas indicadas no fim do Scroll'); 
-			$("#ulRotas").show();	  
+			alert('Fim da execução.Veja o resultado abaixo...'); 			
+			buscaResultado();
 		}else{
 			etapa++;
 			$('#messages').append($('<li>').text(msg));
-			socket.emit('chat message',etapa);
+			socket.emit('messageBroadcast',etapa);
 		} 				
-      });
+      });	  
+	  function criaUlClassificacao(tipoTopico,array)
+	  {
+		if (array.length > 0)
+		{ 
+			var list = $("#divResultados").append("<ul class=\"list-group\"></ul>");
+			list.append("<li class=\"\list-group-item active\">"+ tipoTopico +"</li>");	
+			
+			for (var i = 0; i < array.length; i++)		
+				list.append("<li class=\"\list-group-item\">Id:"+ array[i].id + " -"+ array[i].content +"</li>");			
+		}
+	  } 
+	  function buscaResultado()
+	  {
+	    $.get( "/listTopicos", function( topicos )
+		{		  
+			var lstTopicos = topicos;
+			$.get( "/listIssues", function( data )
+			{		  
+				for(var i = 0; i< lstTopicos.length;i++)			
+					criaUlClassificacao(lstTopicos[i],data.responses.filter(x => x.tipoTopico === lstTopicos[i]));										
+			});
+		});
+	  } 
     </script>
   </body>
 </html>

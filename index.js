@@ -7,10 +7,23 @@ var respRequisicao;
 var listResp = [];
 const { MongoClient } = require("mongodb");
 var mongoose = require('mongoose'); 
-var lstTopicos = ["Arquivo", "Remessa","Retorno",  "Código","Barra","Certificado","Boleto", "Layout","Carteira", "CNAB", 
-                  "PDF", "Carnê", "Impressão", "Caixa","Itaú","Bradesco","Santander","Votorantim", "Ajuda","Dúvida","Erro","Problema"];
+var lstTopicos = ["remessa","retorno","código","barra","barras","certificado","boleto", "layout","carteira", "cnab", 
+                  "pdf", "carnê", "impressão", "caixa","itaú","bradesco","santander","votorantim", 
+				  "ajuda","dúvida","erro","problema","banco do brasil"];
+var Schema = mongoose.Schema;   
+var responseSchema = new Schema
+(
+  {		
+	responses:[Object]
+  }
+); 			  
 /***************************  Socket.io     ************************************/
 /*******************************************************************************/
+app.get('/listTopicos', function(req, res)
+{
+    res.send(lstTopicos);
+});
+
 app.get('/', function(req, res)
 {
   res.sendFile(__dirname + '/index.html');
@@ -18,16 +31,9 @@ app.get('/', function(req, res)
 
 app.get('/listIssues', function(req, res)
 {
-   mongoose.connect(process.env.MONGO_URI);		    
-   var Schema = mongoose.Schema;   
-   var responseSchema = new Schema
-   (
-	  {		
-		responses:[Object]
-	  }
-   );  	
+   mongoose.connect("mongodb://foodfuture:viva.147@ds243798.mlab.com:43798/foodfuture");		       
    var ResponseModel = mongoose.model('responses', responseSchema);       
-   ResponseModel.findOne({ 'name.last': 'Ghost' }, function (err, responses)
+   ResponseModel.findOne({}, function (err, responses)
    {
        if (err) return handleError(err);
 		
@@ -37,9 +43,9 @@ app.get('/listIssues', function(req, res)
 
 io.on('connection', function(socket)
 {
-  socket.on('chat message', function(etapaAtual)
+  socket.on('messageBroadcast', function(etapaAtual)
   {	
-	mediadorCrawler(etapaAtual);	       
+	   mediadorCrawler(etapaAtual);	       
   });
 });
 
@@ -49,27 +55,8 @@ http.listen(port, function(){
 
 function comunicaAoCliente(msg)
 {
-	io.emit('chat message', msg);
+	io.emit('messageBroadcast', msg);
 } 
-/********************** Funções HTTP *************************************/
-function requisicaoServidor(url,listaAnalise,callback)
-{
-	httpCrawler.get(url, function(res)
-	{
-		var data = "";
-		res.on('data', function (chunk)
-		{
-			data += chunk;			
-		});
-		res.on("end", function()
-		{			
-			callback(data);
-		});
-	}).on("error", function()
-	{        
-			callback(null);
-	});
-}
 /***************************** Específicas do Crawler *****************************/
 var cheerio = require("cheerio");
 function mediadorCrawler(etapa)
@@ -83,6 +70,7 @@ function makeRequest(indice)
 	request('https://github.com/BoletoNet/boletonet/issues?page='+ indice, { json: false }, (err, res, body) => 
 	{		
 		var tipoTopico = "indefinido";  
+		var comparacao = "";
 		$ = cheerio.load(body);				
 		$('a').each(function (index, element) 
 		{			
@@ -90,7 +78,8 @@ function makeRequest(indice)
 			{				
 				for(var i=0;i<lstTopicos.length;i++)
 				{
-					if($(element).text().includes(lstTopicos[i]))
+					comparacao = $(element).text().toLowerCase();
+					if(comparacao.includes(lstTopicos[i]))
 					{
 					  	tipoTopico = lstTopicos[i];
 						i = lstTopicos.length;
@@ -105,19 +94,13 @@ function makeRequest(indice)
 		if((indice + 1) === 11)
 		   saveList(); 	
 			
-		comunicaAoCliente('Indice:' + indice + ' executado');					
+		comunicaAoCliente('Paginação:' + indice + ' analisada...');					
 	});	
 }
 function saveList()
 {
-	mongoose.connect(process.env.MONGO_URI);		
-    var Schema = mongoose.Schema;   
-    var responseSchema = new Schema
-	(
-	  {		
-		responses:[Object]
-	  }
-	);  	
+	// mongoose.connect(process.env.MONGO_URI);		
+	mongoose.connect("mongodb://foodfuture:viva.147@ds243798.mlab.com:43798/foodfuture");    
 	var ResponseModel = mongoose.model('responses', responseSchema);  
 	var responseDB = new ResponseModel({responses : listResp});
 	responseDB.save(function (err)
