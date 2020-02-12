@@ -9,7 +9,7 @@ const { MongoClient } = require("mongodb");
 var mongoose = require('mongoose'); 
 var lstTopicos = ["remessa","retorno","código","barra","barras","certificado","boleto", "layout","carteira", "cnab", 
                   "pdf", "carnê", "impressão", "caixa","itaú","bradesco","santander","votorantim", 
-				  "ajuda","dúvida","erro","problema","banco do brasil"];
+				  "ajuda","dúvida","erro","problema","banco do brasil","inter"];
 var Schema = mongoose.Schema;   
 var responseSchema = new Schema
 (
