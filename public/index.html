@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">           
+    <title>Analisador de Pacotes</title>        
+  </head>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">          
+          <a class="navbar-brand" href="#">Analisador de Packages</a>
+        </div>        
+      </div>
+    </nav>        
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">                
+				<p>Cole entre as aspas as dependências do seu projeto NodeJs.(Arquivo package.json)</p>
+				<p>
+					<button id="iniciarCrawler" type="button" class="btn btn-danger" onclick="iniciarCrawler(0)">Iniciar</button>  
+				</p>												
+            </div>
+	    </div>      
+		<div class="row">
+			<div class="col-lg-12">
+				<textarea id="txtModulos"  style="width:900px;height:100px"></textarea>					 				
+			</div>
+		</div>
+		<div id="divResultados">
+		</div>
+    </div> <!-- /container -->        	
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" /> 	
+	<link href="analyser.css" rel="stylesheet"/>
+	<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.js"></script>	
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>	
+	<script src="analyser.js"></script>
+  </body>
+</html>
