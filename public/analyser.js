@@ -74,7 +74,7 @@
 		var list = $("#divResultados").append("<ul class=\"list-group\"></ul>");
 		list.append("<li class=\"\list-group-item active\">"+ tipoTopico +"</li>");	
 		
-		for (var i = 1; i < 2; i++)		
+		for (var i = 1; i < array.length; i++)		
 			list.append("<li class=\"\list-group-item\">"+ array[i].content +"</li>");			
 	}
   } 	   
